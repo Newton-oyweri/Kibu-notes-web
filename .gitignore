@@ -23,3 +23,29 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Editor settings
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
