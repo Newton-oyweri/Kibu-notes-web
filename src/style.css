@@ -1,3 +1,6 @@
+/* Tailwind CSS v4 — @custom-variant and @theme are valid Tailwind at-rules.
+   VS Code's built-in CSS server may flag them as unknown; install the
+   Tailwind CSS IntelliSense extension or set css.lint.unknownAtRules to "ignore". */
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
