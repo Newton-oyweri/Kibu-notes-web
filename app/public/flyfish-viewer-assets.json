@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "@file-viewer/vite-plugin",
+  "rendererIds": [
+    "code",
+    "markdown",
+    "image",
+    "audio",
+    "video",
+    "pdf",
+    "office-word-openxml",
+    "office-word-binary",
+    "open-document",
+    "spreadsheet-openxml",
+    "spreadsheet-dbf",
+    "office-presentation-binary",
+    "office-presentation",
+    "ofd",
+    "apple-pages",
+    "apple-numbers",
+    "apple-keynote",
+    "office-wordperfect",
+    "office-hangul"
+  ],
+  "assets": [
+    {
+      "rendererId": "pdf",
+      "id": "pdf-worker",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/pdf/pdf.worker.mjs",
+      "copied": true,
+      "sourcePackage": "pdfjs-dist",
+      "sourceVersion": "5.4.624"
+    },
+    {
+      "rendererId": "pdf",
+      "id": "pdf-cmaps",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/pdf/cmaps",
+      "copied": true,
+      "sourcePackage": "pdfjs-dist",
+      "sourceVersion": "5.4.624"
+    },
+    {
+      "rendererId": "pdf",
+      "id": "pdf-wasm",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/pdf/wasm",
+      "copied": true,
+      "sourcePackage": "pdfjs-dist",
+      "sourceVersion": "5.4.624"
+    },
+    {
+      "rendererId": "pdf",
+      "id": "pdf-standard-fonts",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/pdf/standard_fonts",
+      "copied": true,
+      "sourcePackage": "pdfjs-dist",
+      "sourceVersion": "5.4.624"
+    },
+    {
+      "rendererId": "pdf",
+      "id": "pdf-cjk-font-fallback",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/pdf/fonts",
+      "copied": true,
+      "required": true
+    },
+    {
+      "rendererId": "office-presentation",
+      "id": "pptx-worker",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/pptx/pptx.worker.js",
+      "copied": true
+    },
+    {
+      "rendererId": "office-presentation-binary",
+      "id": "ppt-module",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/ppt/dist/pptjs.mjs",
+      "copied": true,
+      "sourcePackage": "@file-viewer/ppt",
+      "sourceVersion": "1.0.2"
+    },
+    {
+      "rendererId": "office-presentation-binary",
+      "id": "ppt-worker",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/ppt/dist/pptjs.worker.js",
+      "copied": true,
+      "sourcePackage": "@file-viewer/ppt",
+      "sourceVersion": "1.0.2"
+    },
+    {
+      "rendererId": "office-presentation-binary",
+      "id": "ppt-runtime-dist",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/ppt/dist",
+      "copied": true,
+      "sourcePackage": "@file-viewer/ppt",
+      "sourceVersion": "1.0.2"
+    },
+    {
+      "rendererId": "office-presentation-binary",
+      "id": "ppt-runtime-manifest",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/ppt/dist/manifest.json",
+      "copied": true,
+      "sourcePackage": "@file-viewer/ppt",
+      "sourceVersion": "1.0.2"
+    },
+    {
+      "rendererId": "office-presentation-binary",
+      "id": "ppt-runtime-package",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/ppt/package.json",
+      "copied": true,
+      "sourcePackage": "@file-viewer/ppt",
+      "sourceVersion": "1.0.2"
+    },
+    {
+      "rendererId": "office-presentation-binary",
+      "id": "ppt-runtime-license",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/ppt/LICENSE",
+      "copied": true,
+      "sourcePackage": "@file-viewer/ppt",
+      "sourceVersion": "1.0.2"
+    },
+    {
+      "rendererId": "office-presentation-binary",
+      "id": "ppt-runtime-notice",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/ppt/NOTICE.md",
+      "copied": true,
+      "sourcePackage": "@file-viewer/ppt",
+      "sourceVersion": "1.0.2"
+    },
+    {
+      "rendererId": "office-presentation-binary",
+      "id": "ppt-runtime-readme",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/ppt/README.md",
+      "copied": true,
+      "sourcePackage": "@file-viewer/ppt",
+      "sourceVersion": "1.0.2"
+    },
+    {
+      "rendererId": "office-word-openxml",
+      "id": "docx-worker",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/docx/docx.worker.js",
+      "copied": true
+    },
+    {
+      "rendererId": "office-word-openxml",
+      "id": "docx-worker-jszip",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/docx/jszip.min.js",
+      "copied": true
+    },
+    {
+      "rendererId": "spreadsheet-openxml",
+      "id": "spreadsheet-worker",
+      "to": "/home/skyla/Projects/Kibu-notes-web/app/public/vendor/xlsx/sheet.worker.js",
+      "copied": true,
+      "sourcePackage": "@file-viewer/renderer-spreadsheet",
+      "sourceVersion": "3.3.3"
+    }
+  ]
+}
