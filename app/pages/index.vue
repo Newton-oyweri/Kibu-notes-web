@@ -1,65 +1,88 @@
+import { slugify } from '~/utils/slugify'
 <script setup lang="ts">
-const DEFAULT_SOURCE = 'https://pub-937848871caa438bb7b53c74c18ed261.r2.dev/uploads/a2222100-2222-2222-2222-000000000210_58d6536f-3c20-4901-9875-8157b28c465d_chap16java4th.ppt'
-
-const MIME: Record<string, string> = {
-  pdf: 'application/pdf',
-  ppt: 'application/vnd.ms-powerpoint',
-  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  doc: 'application/msword',
-  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  png: 'image/png',
-  jpg: 'image/jpeg',
-  jpeg: 'image/jpeg'
+interface School {
+  id: string
+  name: string
+  code: string
 }
 
-const file = ref<File | null>(null)
-const downloadUrl = ref('')
-const filename = ref('')
-const error = ref('')
+const { $supabase } = useNuxtApp()
 
-onMounted(async () => {
-  try {
-    const source = new URLSearchParams(location.search).get('url') || DEFAULT_SOURCE
-    const name = decodeURIComponent(new URL(source).pathname.split('/').pop() || 'file')
-    const ext = name.split('.').pop()?.toLowerCase() || ''
-    filename.value = name
+const { data: schools, error } = await useAsyncData(
+  'kibu-schools',
+  async () => {
+    const { data, error } = await $supabase
+      .from('schools')
+      .select('id, name, code')
+      .order('name')
 
-    const res = await fetch(`/api/file?url=${encodeURIComponent(source)}`)
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const blob = await res.blob()
-    file.value = new File([blob], name, { type: MIME[ext] || blob.type })
-    downloadUrl.value = URL.createObjectURL(blob)
-  } catch (e) {
-    error.value = String(e)
+    if (error) throw error
+
+    return data as School[]
   }
+)
+
+useSeoMeta({
+  title: 'Kibu Notes | Kibabii University Student Resources',
+  description: 'Explore Kibabii University schools, academic programmes, notes and past examination papers.'
 })
 </script>
 
 <template>
-  <UContainer class="py-6 space-y-4">
-    <div class="flex items-center justify-between gap-2">
-      <h1 class="text-xl font-semibold">
-        Kibu Notes
-      </h1>
-      <UButton
-        v-if="downloadUrl"
-        :href="downloadUrl"
-        :download="filename"
-        icon="i-lucide-download"
-        label="Download"
-      />
-    </div>
+  <UContainer class="py-10 space-y-8">
+    <section class="space-y-3">
+      <p class="text-sm font-medium text-primary">
+        Learn. Share. Grow.
+      </p>
 
-    <UAlert
-      v-if="error"
-      color="error"
-      title="Failed to load file"
-      :description="error"
-    />
-    <p v-else-if="!file" class="text-muted">
-      Loading...
-    </p>
-    <NotesViewer v-else :file="file" />
+      <h1 class="text-3xl font-bold">
+        Find your academic resources
+      </h1>
+
+      <p class="text-muted max-w-2xl">
+        Explore schools, programmes, notes and past papers at Kibabii University.
+      </p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold">
+        Explore schools
+      </h2>
+
+      <UAlert
+        v-if="error"
+        color="error"
+        title="Could not load schools"
+        :description="error.message"
+      />
+
+      <div
+        v-else-if="schools?.length"
+        class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <NuxtLink
+          v-for="school in schools"
+          :key="school.id"
+          :to="`/schools/${encodeURIComponent(slugify(school.name))}`"
+          class="rounded-xl border border-default p-5 hover:border-primary transition-colors"
+        >
+          <h3 class="font-semibold">
+            {{ school.name }}
+          </h3>
+
+          <p class="text-sm text-muted mt-2">
+            {{ school.code }}
+          </p>
+
+          <p class="text-sm text-primary mt-4">
+            Explore programmes →
+          </p>
+        </NuxtLink>
+      </div>
+
+      <p v-else-if="schools" class="text-muted">
+        No schools have been added yet.
+      </p>
+    </section>
   </UContainer>
 </template>
