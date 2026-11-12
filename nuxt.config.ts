@@ -6,7 +6,11 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui'
   ],
-
+ colorMode: {
+    preference: 'light',
+    fallback: 'light',
+    classSuffix: ''
+  },
   devtools: {
     enabled: true
   },

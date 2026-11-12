@@ -53,7 +53,7 @@ const downloadUrl = '/downloads/kibu-notes.apk'
         </a>
       </template>
     </UHeader>
-
+    <AppBreadcrumb />
     <UMain>
       <NuxtPage />
     </UMain>
