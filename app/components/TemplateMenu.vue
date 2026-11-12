@@ -2,31 +2,39 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 
-const items: DropdownMenuItem[] = [
-  { label: 'Computer Science' },
-  { label: 'Information Technology' },
-  { label: 'Software Engineering' },
-  { label: 'Business Information Technology' },
-  { label: 'Mathematics' },
-  { label: 'Statistics' },
-  { label: 'Physics' },
-  { label: 'Chemistry' },
-  { label: 'Biology' },
-  { label: 'Agriculture' },
-  { label: 'Nursing' },
-  { label: 'Public Health' },
-  { label: 'Education Science' },
-  { label: 'Education Arts' },
-  { label: 'Economics' },
-  { label: 'Commerce' },
-  { label: 'Accounting' },
-  { label: 'Human Resource Management' },
-  { label: 'Procurement and Supply Chain' },
-  { label: 'Criminology' },
-  { label: 'Communication and Media' },
-  { label: 'Environmental Science' },
-  { label: 'Hospitality and Tourism' }
-]
+const { $supabase } = useNuxtApp()
+
+interface Programme {
+  id: string
+  title: string
+  code: string
+  duration_years: number
+}
+
+const selectedCourse = ref('Choose course')
+
+const { data: programmes, error } = await useAsyncData(
+  'kibu-programmes',
+  async () => {
+    const { data, error } = await $supabase
+      .from('programmes')
+      .select('id, title, code, duration_years')
+      .order('title')
+
+    if (error) throw error
+
+    return data as Programme[]
+  }
+)
+
+const items = computed<DropdownMenuItem[]>(() =>
+  (programmes.value ?? []).map(programme => ({
+    label: programme.title,
+    onSelect: () => {
+      selectedCourse.value = programme.title
+    }
+  }))
+)
 </script>
 
 <template>
@@ -39,7 +47,7 @@ const items: DropdownMenuItem[] = [
     size="xs"
   >
     <UButton
-      label="Choose course"
+      :label="selectedCourse"
       variant="subtle"
       trailing-icon="i-lucide-chevron-down"
       size="xs"
@@ -50,4 +58,11 @@ const items: DropdownMenuItem[] = [
       }"
     />
   </UDropdownMenu>
+
+  <UAlert
+    v-if="error"
+    color="error"
+    title="Could not load programmes"
+    :description="error.message"
+  />
 </template>

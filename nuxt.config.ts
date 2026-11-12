@@ -1,4 +1,4 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+
 import { fileViewerRenderers } from '@file-viewer/vite-plugin'
 
 export default defineNuxtConfig({
@@ -29,6 +29,13 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
+    }
+  },
+
+  runtimeConfig: {
+    public: {
+      supabaseUrl: '',
+      supabaseKey: ''
     }
   }
 })
