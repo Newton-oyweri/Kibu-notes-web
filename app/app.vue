@@ -1,3 +1,4 @@
+```vue
 <script setup>
 useHead({
   meta: [
@@ -11,17 +12,18 @@ useHead({
   }
 })
 
-const title = 'Nuxt Starter Template'
-const description = 'A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours.'
+const title = 'Kibu Notes'
+const description = 'Kibabii University student resources. Access notes, past papers and academic materials.'
 
 useSeoMeta({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
   twitterCard: 'summary_large_image'
 })
+
+const downloadUrl = '/downloads/kibu-notes.apk'
 </script>
 
 <template>
@@ -32,7 +34,7 @@ useSeoMeta({
           to="/"
           class="focus-visible:outline-3 outline-primary/25 rounded-md p-1 -ms-1"
         >
-          <AppLogo class="w-auto h-6 shrink-0" />
+          <AppLogo class="w-auto h-9 shrink-0" />
         </NuxtLink>
 
         <TemplateMenu />
@@ -41,14 +43,14 @@ useSeoMeta({
       <template #right>
         <UColorModeButton />
 
-        <UButton
-          to="https://github.com/nuxt-ui-templates/starter"
-          target="_blank"
-          icon="i-simple-icons-github"
-          aria-label="GitHub"
-          color="neutral"
-          variant="ghost"
-        />
+        <a
+          :href="downloadUrl"
+          download
+          class="flex flex-col items-center justify-center gap-0.5 rounded-lg px-3 py-1.5 text-primary hover:bg-primary/10 transition-colors"
+        >
+          <UIcon name="i-lucide-download" class="size-5" />
+          <span class="text-xs font-semibold">Get App</span>
+        </a>
       </template>
     </UHeader>
 
@@ -56,25 +58,26 @@ useSeoMeta({
       <NuxtPage />
     </UMain>
 
-    <USeparator icon="i-simple-icons-nuxtdotjs" />
+    <USeparator />
 
     <UFooter>
       <template #left>
         <p class="text-sm text-muted">
-          Built with Nuxt UI • © {{ new Date().getFullYear() }}
+          Kibu Notes • © {{ new Date().getFullYear() }}
         </p>
       </template>
 
       <template #right>
-        <UButton
-          to="https://github.com/nuxt-ui-templates/starter"
-          target="_blank"
-          icon="i-simple-icons-github"
-          aria-label="GitHub"
-          color="neutral"
-          variant="ghost"
-        />
+        <a
+          :href="downloadUrl"
+          download
+          class="flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+        >
+          <UIcon name="i-lucide-download" class="size-4" />
+          Get App
+        </a>
       </template>
     </UFooter>
   </UApp>
 </template>
+```
