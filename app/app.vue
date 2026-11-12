@@ -28,7 +28,7 @@ const downloadUrl = '/downloads/kibu-notes.apk'
 
 <template>
   <UApp>
-    <UHeader>
+  <UHeader :toggle="false">
       <template #left>
         <NuxtLink
           to="/"
@@ -57,27 +57,6 @@ const downloadUrl = '/downloads/kibu-notes.apk'
     <UMain>
       <NuxtPage />
     </UMain>
-
-    <USeparator />
-
-    <UFooter>
-      <template #left>
-        <p class="text-sm text-muted">
-          Kibu Notes • © {{ new Date().getFullYear() }}
-        </p>
-      </template>
-
-      <template #right>
-        <a
-          :href="downloadUrl"
-          download
-          class="flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-        >
-          <UIcon name="i-lucide-download" class="size-4" />
-          Get App
-        </a>
-      </template>
-    </UFooter>
   </UApp>
 </template>
 ```
