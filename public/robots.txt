@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kibu-notes-web.vercel.app/sitemap.xml

@@ -4,13 +4,25 @@ import { fileViewerRenderers } from '@file-viewer/vite-plugin'
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxt/ui'
+    '@nuxt/ui',
+    '@nuxtjs/sitemap'
   ],
- colorMode: {
+
+ site: {
+  url: 'https://kibu-notes-web.vercel.app'
+},
+
+  sitemap: {
+    sources: ['/api/__sitemap__/urls'],
+    exclude: ['/search']
+  },
+
+  colorMode: {
     preference: 'light',
     fallback: 'light',
     classSuffix: ''
   },
+
   devtools: {
     enabled: true
   },

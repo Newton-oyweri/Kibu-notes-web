@@ -139,29 +139,78 @@ onBeforeUnmount(() => {
 })
 
 // SEO
-const description = computed(() =>
-  resource.value?.description ||
-  `${resource.value?.title || 'Study resource'} - learning materials and notes for Kibabii University students.`
-)
+const origin = useRequestURL().origin
+const canonicalUrl = computed(() => `${origin}/resources/${slug.value}`)
+
+const description = computed(() => {
+  const r = resource.value
+  if (r?.description) return r.description
+  const unitPart = unit.value ? ` for ${unit.value.code} ${unit.value.title}` : ''
+  return `${r?.title || 'Study resource'}${unitPart} - notes and past papers for Kibabii University students.`
+})
 
 const topics = computed(() => resource.value?.topics ?? [])
 
+const seoTitle = computed(() => {
+  if (!resource.value) return 'Resource | Kibu Notes'
+  const code = unit.value ? ` (${unit.value.code})` : ''
+  return `${resource.value.title}${code} | Kibu Notes`
+})
+
 useSeoMeta({
-  title: () => resource.value
-    ? `${resource.value.title} | Kibu Notes`
-    : 'Resource | Kibu Notes',
-
+  title: () => seoTitle.value,
   description: () => description.value,
-
-  ogTitle: () => resource.value
-    ? `${resource.value.title} | Kibu Notes`
-    : 'Kibu Notes',
-
+  ogTitle: () => seoTitle.value,
   ogDescription: () => description.value,
-
+  ogUrl: () => canonicalUrl.value,
   ogType: 'article',
+  ogSiteName: 'Kibu Notes',
+  twitterCard: 'summary',
+  articleModifiedTime: () => resource.value?.updated_at ?? undefined
+})
 
-  twitterCard: 'summary'
+const jsonLd = computed(() => {
+  const r = resource.value
+  if (!r) return ''
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'LearningResource',
+        name: r.title,
+        description: description.value,
+        url: canonicalUrl.value,
+        inLanguage: 'en',
+        learningResourceType: r.category === 'past_papers' ? 'Past paper' : 'Study notes',
+        keywords: topics.value.join(', ') || undefined,
+        datePublished: r.created_at,
+        dateModified: r.updated_at ?? r.created_at,
+        provider: { '@type': 'Organization', name: 'Kibu Notes' },
+        ...(unit.value && {
+          isPartOf: {
+            '@type': 'Course',
+            name: unit.value.title,
+            courseCode: unit.value.code
+          }
+        })
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: origin },
+          ...(unit.value
+            ? [{ '@type': 'ListItem', position: 2, name: `${unit.value.code} ${unit.value.title}`, item: `${origin}/units/${unit.value.code}` }]
+            : []),
+          { '@type': 'ListItem', position: unit.value ? 3 : 2, name: r.title, item: canonicalUrl.value }
+        ]
+      }
+    ]
+  }).replace(/</g, '\\u003c')
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: canonicalUrl }],
+  script: [{ type: 'application/ld+json', innerHTML: jsonLd }]
 })
 
 // Helpers
