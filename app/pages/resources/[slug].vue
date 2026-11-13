@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 interface Resource {
   id: string
@@ -23,6 +22,18 @@ interface Unit {
   title: string
   code: string
   description: string | null
+}
+
+const MIME: Record<string, string> = {
+  pdf: 'application/pdf',
+  ppt: 'application/vnd.ms-powerpoint',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg'
 }
 
 const route = useRoute()
@@ -98,6 +109,35 @@ const { data: unit } = await useAsyncData(
   }
 )
 
+// Load the document through the proxy, then hand it to the viewer
+const file = ref<File | null>(null)
+const downloadUrl = ref('')
+const loadError = ref('')
+
+onMounted(async () => {
+  if (!resource.value) return
+
+  try {
+    const { file_path, file_name, mime_type } = resource.value
+    const ext = file_name.split('.').pop()?.toLowerCase() || ''
+
+    const res = await fetch(`/api/file?url=${encodeURIComponent(file_path)}`)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
+    const blob = await res.blob()
+    file.value = new File([blob], file_name, {
+      type: MIME[ext] || mime_type || blob.type
+    })
+    downloadUrl.value = URL.createObjectURL(blob)
+  } catch (e) {
+    loadError.value = String(e)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (downloadUrl.value) URL.revokeObjectURL(downloadUrl.value)
+})
+
 // SEO
 const description = computed(() =>
   resource.value?.description ||
@@ -156,18 +196,28 @@ const categoryLabel = computed(() => {
 </script>
 
 <template>
-  <div v-if="resource" class="mx-auto max-w-5xl px-4 py-8 space-y-8">
+  <div v-if="resource" class="mx-auto max-w-5xl px-4 py-8 space-y-6">
 
-    <!-- Resource heading -->
+    <!-- Resource heading + doc info -->
     <section class="space-y-4">
-      <div class="flex flex-wrap items-center gap-2">
-        <UBadge color="primary" variant="subtle">
-          {{ categoryLabel }}
-        </UBadge>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <UBadge color="primary" variant="subtle">
+            {{ categoryLabel }}
+          </UBadge>
 
-        <UBadge color="neutral" variant="outline">
-          {{ resource.mime_type.split('/').pop()?.toUpperCase() }}
-        </UBadge>
+          <UBadge color="neutral" variant="outline">
+            {{ resource.mime_type.split('/').pop()?.toUpperCase() }}
+          </UBadge>
+        </div>
+
+        <UButton
+          v-if="downloadUrl"
+          :href="downloadUrl"
+          :download="resource.file_name"
+          icon="i-lucide-download"
+          label="Download"
+        />
       </div>
 
       <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -204,58 +254,11 @@ const categoryLabel = computed(() => {
       </div>
     </section>
 
-    <USeparator />
-
-    <!-- Document -->
-    <section class="space-y-4">
-      <h2 class="text-xl font-semibold">
-        Document
+    <!-- Topics covered -->
+    <section v-if="topics.length" class="space-y-3">
+      <h2 class="text-lg font-semibold">
+        Topics covered
       </h2>
-
-      <UCard>
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div class="flex min-w-0 items-center gap-3">
-            <div class="rounded-lg bg-primary/10 p-3">
-              <UIcon
-                name="i-lucide-file-text"
-                class="size-7 text-primary"
-              />
-            </div>
-
-            <div class="min-w-0">
-              <p class="truncate font-medium">
-                {{ resource.file_name }}
-              </p>
-              <p class="text-sm text-muted">
-                {{ formatFileSize(resource.file_size) }}
-              </p>
-            </div>
-          </div>
-
-          <UButton
-            :to="resource.file_path"
-            target="_blank"
-            rel="noopener noreferrer"
-            icon="i-lucide-external-link"
-            trailing
-          >
-            Open document
-          </UButton>
-        </div>
-      </UCard>
-    </section>
-
-    <!-- Topics -->
-    <section v-if="topics.length" class="space-y-4">
-      <div>
-        <h2 class="text-xl font-semibold">
-          Topics covered
-        </h2>
-
-        <p class="mt-1 text-sm text-muted">
-          Explore the concepts covered in this learning resource.
-        </p>
-      </div>
 
       <div class="flex flex-wrap gap-2">
         <UBadge
@@ -270,6 +273,24 @@ const categoryLabel = computed(() => {
       </div>
     </section>
 
+    <USeparator />
+
+    <!-- Document viewer -->
+    <section>
+      <UAlert
+        v-if="loadError"
+        color="error"
+        title="Failed to load file"
+        :description="loadError"
+      />
+
+      <p v-else-if="!file" class="text-muted">
+        Loading document...
+      </p>
+
+      <NotesViewer v-else :file="file" />
+    </section>
+
     <!-- Unit information -->
     <section v-if="unit?.description" class="space-y-3">
       <USeparator />
@@ -282,19 +303,6 @@ const categoryLabel = computed(() => {
         {{ unit.description }}
       </p>
     </section>
-
-    <!-- Attribution -->
-    <USeparator />
-
-    <footer class="text-sm text-muted">
-      <p>
-        Shared for learning purposes on Kibu Notes.
-      </p>
-
-      <p class="mt-1">
-        Kibu Notes – Learn. Share. Grow.
-      </p>
-    </footer>
 
   </div>
 </template>
